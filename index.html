@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href='http://cdn.repository.webfont.com/webfonts/nomal/137682/46719/5e9fb721f629d807f4eb4e22.css' rel='stylesheet' type='text/css' />
+    <link href='http://cdn.repository.webfont.com/webfonts/nomal/137682/46010/5e9fe507f629d807f4eb4e43.css' rel='stylesheet' type='text/css' />
     <title>cloth</title>
     <style>
         body {
@@ -10,7 +14,6 @@
             overflow: hidden;
             height: 600px;
         }
-
         canvas {
             padding: 0;
             margin: 0;
@@ -29,12 +32,44 @@
             top: 0;
             bottom: 0;
             width: 650px;
-            height: 650px;
+            height: 700px;
             border-radius: 40px;
             margin: auto;
             background: rgba(255, 255, 255, .3);
+            box-shadow: 0 0 20px 10px inset rgba(0, 0, 0, .2) !important;
+        }
+        .start-btn{
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: inline-block;
+            margin: auto;
+            width: 200px;
+            height: 60px;
+            line-height: 60px;
+            z-index: 9999;
+            font-size: 40px;
+            background-color: white;
+            text-align: center;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            box-sizing: border-box;
+            background-image: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+            box-shadow: 0 0 20px 20px rgba(0, 0, 0, .2);
+            cursor: pointer;
         }
 
+        .css20450ca157219d2{
+            text-align: center;
+            font-size: 40px;
+            color: lightcyan;
+        }
+        .board{
+            display: none;
+        }
         .container canvas {
             display: block;
             margin: auto;
@@ -45,14 +80,36 @@
 </head>
 <body>
 <div class="container">
-    <canvas id="chessBoard" width="630px" height="630px"></canvas>
+    <div class="start-btn css2045bfeed6219d2" onclick="clickHandle()">开始游戏</div>
+    <div class="board">
+        <div class="css20450ca157219d2" style="padding-top: 20px;">下得过五子棋</div>
+        <canvas id="chessBoard" width="630px" height="630px"></canvas>
+    </div>
 </div>
 <canvas id="sakura"></canvas>
 <div class="btnbg">
 </div>
-
+<audio id="music" src="hua.mp3" loop ></audio>
+<script type="text/javascript">
+    function clickHandle() {
+        document.getElementsByClassName("start-btn")[0].style.display = "none";
+        document.getElementsByClassName("board")[0].style.display = "block";
+        //调用函数
+        setInterval(play(), 1);
+    }
+    //封装函数让谷歌浏览器自动播放
+    function play() {
+        var music = document.getElementById("music");
+        //判断如果音乐停止播放中，就让他播放。。。
+        if (music.paused) {
+            music.paused = false;
+            music.play();
+        }
+    }
+</script>
 <!-- chessborad -->
-<script type="text/javascript" src="chess.js"></script>
+<!--<script type="text/javascript" src="chess.js"></script>-->
+<script type="text/javascript" src="learning.js"></script>
 <!-- sakura shader -->
 <script id="sakura_point_vsh" type="x-shader/x_vertex">
 uniform mat4 uProjection;
@@ -728,7 +785,7 @@ void main(void) {
             //velocity
             tmpv3.x = symmetryrand() * 0.3 + 0.8;
             tmpv3.y = symmetryrand() * 0.2 - 1.0;
-            tmpv3.z = symmetryrand() * 0.3 + 0.5;
+            tmpv3.z = symmetryrand() * 0.3 ;
             Vector3.normalize(tmpv3);
             tmpv = 2.0 + Math.random() * 1.0;
             tmpprtcl.setVelocity(tmpv3.x * tmpv, tmpv3.y * tmpv, tmpv3.z * tmpv);
@@ -755,7 +812,7 @@ void main(void) {
             );
 
             //size
-            tmpprtcl.setSize(0.9 + Math.random() * 0.1);
+            tmpprtcl.setSize(0.6 + Math.random() * 0.1);
         }
     }
 

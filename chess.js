@@ -5,42 +5,59 @@ var flag = false; // 输赢标识
 var step = 0; // 步数
 var color = ["#000", "#fff"];
 var chessArr = []; // 记录
+// 初始化数据状态
+for (var i = 0; i < 15; i++) {
+    chessArr[i] = [];
+    for (var j = 0; j < 15; j++) {
+        chessArr[i][j] = 0;
+    }
+}
 
 /**
  * chess
  */
 // 绘制棋盘
 function drawBoard() {
-    for (var i = 0; i < 20; i++) {
-        context.beginPath();
-        context.moveTo(i * 30 + 30, 30);
-        context.lineTo(i * 30 + 30, chessboard.height - 30);
-        context.closePath();
+    for (var i = 0; i < 15; i++) {
+        //横线条
+        context.moveTo(40 + i * 40, 20);
+        context.lineTo(40 + i * 40, 580);
         context.stroke();
-        context.beginPath();
-        context.moveTo(30, i * 30 + 30);
-        context.lineTo(chessboard.width - 30, i * 30 + 30);
-        context.closePath();
+        //竖线条
+        context.moveTo(40, 20 + i * 40);
+        context.lineTo(600, 20 + i * 40);
         context.stroke();
-        chessArr[i] = [];
-        for (var j = 0; j < 20; j++) {
-            chessArr[i][j] = 0;
-        }
+        // for (var j = 0; j < 20; j++) {
+        //     chessArr[i][j] = 0;
+        // }
     }
 }
+
 // 归零
 function cleanBoard() {
     context.fillStyle = "#8f7a66";
     context.fillRect(0, 0, chessboard.width, chessboard.height);
 }
+
 // 绘制棋子
 function drawChess(x, y, i) {
     context.beginPath();
-    context.arc(x * 30 + 30, y * 30 + 30, 15, 0, Math.PI * 2, false);
+    context.arc(40 + x * 40, 20 + y * 40, 18, 0, 2 * Math.PI);
     context.closePath();
-    chessArr[x][y] = i;
-    context.fillStyle = color[i - 1];
+    var curColor = color[i - 1];
+    var gradient = context.createRadialGradient(23 + i * 40, 17 + j * 40, 18, 23 + i * 40, 17 + j * 40, 0);
+    if (curColor === "#fff") {
+        gradient.addColorStop(0, "#D1D1D1");
+        gradient.addColorStop(1, "#F9F9F9");
+    }
+    if (curColor === "#000") {
+        gradient.addColorStop(0, "#0A0A0A");
+        gradient.addColorStop(1, "#636766");
+    }
+    context.fillStyle = gradient;
     context.fill();
+    chessArr[x][y] = i;
+
 }
 
 // drawChess(30, 30, "#fff");
@@ -53,10 +70,10 @@ chessboard.addEventListener("click", function (e) {
     }
     var x = e.offsetX;
     var y = e.offsetY;
-    var dx = Math.floor((x + 15) / 30) - 1;
-    var dy = Math.floor((y + 15) / 30) - 1;
+    var dx = Math.floor((x + 20) / 40) - 1;
+    var dy = Math.floor((y + 20) / 40) - 1;
     //是否越界
-    if (x < 30 || x > 630 || y < 30 || y > 630 || chessArr[dx][dy]) {
+    if (x < 40 || x > 600 || y < 20 || y > 580 || chessArr[dx][dy]) {
         return;
     }
     // 落子
@@ -102,6 +119,66 @@ function checkWin(x, y, cc) {
             flag = true;
             alert("你赢了!!");
             return;
+        }
+    }
+}
+
+function computerAI() {
+    var personScore = [], computerScore = [], maxScore = 0, curX = 0, curY = 0;
+    for (var i = 0; i < 15; i++) {
+        personScore[i] = [];
+        computerScore[i] = [];
+        for (var j = 0; j < 15; j++) {
+            personScore[i][j] = 0;
+            computerScore[i][j] = 0;
+        }
+    }
+    for (var i = 0; i < 15; i++) {
+        for (var j = 0; j < 15; j++) {
+            if (chessManStatus[i][j] == 0) {
+                for (var k = 0; k < winCount; k++) {
+                    if (wins[i][j][k]) {
+                        if (personWin[k] == 1 || personWin[k] == 2 || personWin[k] == 3 || personWin[k] == 4) {
+                            personScore[i][j] += personWin[k] * personWin[k] * 200;
+                        }
+                        if (computerWin[k] == 1 || computerWin[k] == 2 || computerWin[k] == 3 || computerWin[k] == 4) {
+                            computerScore[i][j] += (computerWin[k] * computerWin[k] - 1) * 200 + 399;
+                        }
+                    }
+                }
+                if (personScore[i][j] > maxScore) {
+                    maxScore = personScore[i][j];
+                    curX = i;
+                    curY = j;
+                } else if (personScore[i][j] == maxScore) {
+                    if (computerScore[i][j] > computerScore[curX][curY]) {
+                        curX = i;
+                        curY = j;
+                    }
+                }
+                if (computerScore[i][j] > maxScore) {
+                    maxScore = computerScore[i][j];
+                    curX = i;
+                    curY = j;
+                } else if (computerScore[i][j] == maxScore) {
+                    if (personScore[i][j] > personScore[curX][curY]) {
+                        curX = i;
+                        curY = j;
+                    }
+                }
+            }
+        }
+    }
+    drawChessMan(curX, curY);
+    chessManStatus[curX][curY] = 2;
+    for (var k = 0; k < winCount; k++) {
+        if (wins[curX][curY][k]) {
+            computerWin[k]++;
+            personWin[k] = 6;
+            if (computerWin[k] == 5) {
+                alert('电脑赢了!');
+                gameOver = !gameOver;
+            }
         }
     }
 }
