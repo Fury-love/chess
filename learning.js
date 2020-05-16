@@ -145,7 +145,7 @@ function computerAI() {      //电脑智能下棋
 }
 
 //鼠标落下，画棋子
-chessboard.onclick = function (e) {
+function drawChess(e) {
     console.log(e);
     e.preventDefault();
     if (gameOver) {
@@ -178,5 +178,11 @@ chessboard.onclick = function (e) {
         }
         if (!gameOver) computerAI();
     }
+}
+
+if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+    chessboard.addEventListener("click", drawChess);
+} else {
+    chessboard.addEventListener("touchend", drawChess);
 }
 drawChessBoard();
