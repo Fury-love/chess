@@ -180,9 +180,9 @@ function drawChess(e) {
     }
 }
 
-if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+// if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
     chessboard.addEventListener("click", drawChess);
-} else {
-    chessboard.addEventListener("touchend", drawChess);
-}
+// } else {
+//     chessboard.addEventListener("touchend", drawChess);
+// }
 drawChessBoard();
