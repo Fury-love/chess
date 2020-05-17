@@ -156,7 +156,6 @@ function drawChess(e) {
     var i = 0;
     var j = 0;
     if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) { //PC端
-
         i = Math.floor(x / 40);
         j = Math.floor(y / 40);
     } else {
