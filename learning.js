@@ -151,17 +151,18 @@ function drawChess(e) {
     if (gameOver) {
         return;
     }
+    var x = e.offsetX;
+    var y = e.offsetY;
     var i = 0;
     var j = 0;
     if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) { //PC端
-        var x = e.offsetX;
-        var y = e.offsetY;
+
         i = Math.floor(x / 40);
         j = Math.floor(y / 40);
     } else {
-        var clientH = document.body.clientHeight;
-        var x = e.changedTouches[0].clientX - clientWidth * .05;
-        var y = e.changedTouches[0].clientY - (clientH - clientWidth * 110) / 2;
+        // var clientH = document.body.clientHeight;
+        // var x = e.changedTouches[0].clientX - clientWidth * .05;
+        // var y = e.changedTouches[0].clientY - (clientH - clientWidth * 110) / 2;
         i = Math.floor(x / cw);
         j = Math.floor(y / cw);
     }
@@ -183,9 +184,9 @@ function drawChess(e) {
     }
 }
 
-if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+// if (!/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
     chessboard.addEventListener("click", drawChess);
-} else {
-    chessboard.addEventListener("touchend", drawChess);
-}
+// } else {
+//     chessboard.addEventListener("touchend", drawChess);
+// }
 drawChessBoard();
